@@ -1,0 +1,21 @@
+{
+  "name": "重启恢复夹具",
+  "id": "resume",
+  "nodes": [
+    { "id": "download", "type": "download", "config": { "source": "orders" } },
+    { "id": "parse", "type": "parse", "dependsOn": ["download"] },
+    { "id": "validate", "type": "validate", "dependsOn": ["parse"], "config": { "minRows": 1 } },
+    {
+      "id": "publish",
+      "type": "publish",
+      "dependsOn": ["validate"],
+      "config": { "target": "resume-orders", "delayMs": 20 }
+    },
+    {
+      "id": "notify",
+      "type": "custom",
+      "dependsOn": ["publish"],
+      "config": { "label": "通知", "emit": { "notified": true } }
+    }
+  ]
+}

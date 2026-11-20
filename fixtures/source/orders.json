@@ -1,0 +1,7 @@
+[
+  { "id": "o-1001", "amount": 128.5, "currency": "CNY", "email": "lin@example.com", "tags": ["vip"] },
+  { "id": "o-1002", "amount": 66, "currency": "CNY", "email": "zhao@example.com", "tags": [] },
+  { "id": "o-1003", "amount": 240, "currency": "CNY", "email": null, "tags": ["new"] },
+  { "id": "o-1004", "amount": 19.9, "currency": "CNY", "email": "wang@example.com", "tags": [] },
+  { "id": "o-2001", "amount": 42.25, "currency": "USD", "email": "amy@example.com", "tags": [] }
+]

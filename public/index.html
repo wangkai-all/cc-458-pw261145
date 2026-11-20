@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>采集编排器</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <aside class="rail">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <div>
+            <div class="brand-name">采集编排器</div>
+            <div class="brand-sub">DAG · 持久化 · 断点恢复</div>
+          </div>
+        </div>
+
+        <section class="rail-block">
+          <h2 class="rail-title">运行夹具</h2>
+          <div id="fixtures" class="fixture-list" aria-live="polite"></div>
+        </section>
+
+        <section class="rail-block rail-runs">
+          <h2 class="rail-title">运行记录</h2>
+          <ul id="runs" class="run-list"></ul>
+        </section>
+
+        <footer class="rail-foot">
+          <div id="engine-info" class="engine-info">连接中…</div>
+          <div id="legend" class="legend"></div>
+        </footer>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="topbar-title">
+            <h1 id="run-title">选择一个运行</h1>
+            <p id="run-sub" class="muted">从左侧选择运行记录，或运行一个夹具查看 DAG。</p>
+          </div>
+          <div class="actions" id="actions"></div>
+        </header>
+
+        <div id="banner" class="banner" hidden></div>
+
+        <section class="tiles" id="tiles" aria-label="运行状态汇总"></section>
+
+        <section class="stage">
+          <div class="dag-wrap">
+            <div class="dag-head">
+              <h2>DAG</h2>
+              <div class="dag-hint" id="dag-hint"></div>
+            </div>
+            <div id="dag" class="dag" role="img" aria-label="流水线有向无环图"></div>
+          </div>
+          <aside class="inspector" id="inspector">
+            <div class="empty-inspector">
+              <p class="muted">点击 DAG 节点查看日志摘要、重试范围与副作用记录。</p>
+            </div>
+          </aside>
+        </section>
+
+        <section class="events">
+          <div class="events-head">
+            <h2>事件流</h2>
+            <label class="filter">
+              <input type="checkbox" id="filter-node" />
+              <span id="filter-label">只看选中节点</span>
+            </label>
+          </div>
+          <ol id="event-list" class="event-list" aria-live="polite"></ol>
+        </section>
+      </main>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+    <template id="tile-tpl">
+      <div class="tile">
+        <div class="tile-label"></div>
+        <div class="tile-value"></div>
+        <div class="tile-hint"></div>
+      </div>
+    </template>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

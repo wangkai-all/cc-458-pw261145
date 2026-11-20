@@ -1,0 +1,10 @@
+{
+  "name": "循环依赖夹具",
+  "id": "cycle-fixture",
+  "nodes": [
+    { "id": "download", "type": "download", "config": { "source": "orders" } },
+    { "id": "parse", "type": "parse", "dependsOn": ["download", "validate"] },
+    { "id": "validate", "type": "validate", "dependsOn": ["parse"] },
+    { "id": "publish", "type": "publish", "dependsOn": ["validate"] }
+  ]
+}

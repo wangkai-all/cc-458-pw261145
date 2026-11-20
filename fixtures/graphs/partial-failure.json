@@ -1,0 +1,34 @@
+{
+  "name": "上游部分失败夹具",
+  "id": "partial-failure",
+  "nodes": [
+    { "id": "download", "type": "download", "config": { "source": "orders" } },
+    {
+      "id": "parse_ok",
+      "type": "parse",
+      "dependsOn": ["download"],
+      "retry": { "maxAttempts": 2, "backoffMs": 20 }
+    },
+    {
+      "id": "parse_broken",
+      "type": "parse",
+      "dependsOn": ["download"],
+      "retry": { "maxAttempts": 2, "backoffMs": 20 },
+      "config": { "failHard": true }
+    },
+    { "id": "validate_ok", "type": "validate", "dependsOn": ["parse_ok"] },
+    { "id": "validate_broken", "type": "validate", "dependsOn": ["parse_broken"] },
+    {
+      "id": "merge",
+      "type": "custom",
+      "dependsOn": ["validate_ok", "validate_broken"],
+      "config": { "emit": { "merged": true } }
+    },
+    {
+      "id": "publish_ok",
+      "type": "publish",
+      "dependsOn": ["validate_ok"],
+      "config": { "target": "partial-ok" }
+    }
+  ]
+}

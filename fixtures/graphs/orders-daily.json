@@ -1,0 +1,71 @@
+{
+  "id": "orders-daily",
+  "name": "订单日报采集",
+  "description": "下载 → 并行解析人民币/美元 → 校验 → 发布；包含条件跳过与人工暂停点",
+  "version": 1,
+  "nodes": [
+    {
+      "id": "download",
+      "type": "download",
+      "label": "下载订单",
+      "config": { "source": "orders", "delayMs": 60 }
+    },
+    {
+      "id": "parse_cny",
+      "type": "parse",
+      "label": "解析（人民币）",
+      "dependsOn": ["download"],
+      "retry": { "maxAttempts": 3, "backoffMs": 40, "backoffFactor": 2, "maxBackoffMs": 200 },
+      "config": { "delayMs": 50 }
+    },
+    {
+      "id": "parse_usd",
+      "type": "parse",
+      "label": "解析（美元）",
+      "dependsOn": ["download"],
+      "retry": { "maxAttempts": 2, "backoffMs": 30 },
+      "config": { "delayMs": 80 }
+    },
+    {
+      "id": "validate_cny",
+      "type": "validate",
+      "label": "校验（人民币）",
+      "dependsOn": ["parse_cny"],
+      "skipWhen": "parse_cny.output.count == 0",
+      "retry": { "maxAttempts": 2, "backoffMs": 30 },
+      "config": { "minRows": 2 }
+    },
+    {
+      "id": "validate_usd",
+      "type": "validate",
+      "label": "校验（美元）",
+      "dependsOn": ["parse_usd"],
+      "skipWhen": "parse_usd.output.count == 0",
+      "retry": { "maxAttempts": 2, "backoffMs": 30 },
+      "config": { "minRows": 1 }
+    },
+    {
+      "id": "publish_cny",
+      "type": "publish",
+      "label": "发布（人民币）",
+      "dependsOn": ["validate_cny"],
+      "config": { "target": "cny-orders", "delayMs": 40 }
+    },
+    {
+      "id": "publish_usd",
+      "type": "publish",
+      "label": "发布（美元）",
+      "dependsOn": ["validate_usd"],
+      "pauseAfter": true,
+      "config": { "target": "usd-orders", "delayMs": 40 }
+    },
+    {
+      "id": "report",
+      "type": "custom",
+      "label": "汇总日报",
+      "dependsOn": ["publish_cny", "publish_usd"],
+      "skipWhen": "publish_usd.status == skipped",
+      "config": { "label": "汇总", "emit": { "report": "daily-orders" }, "delayMs": 30 }
+    }
+  ]
+}
